@@ -1,0 +1,117 @@
+# Xcode
+# Build, test, and archive an Xcode workspace on macOS.
+# Add steps that install certificates, test, sign, and distribute an app, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/xcode
+# Inspiration:
+# https://ychetankumarsarma.medium.com/build-versioning-in-azure-devops-pipelines-94b5a79f80a0
+# https://arunksingh16.medium.com/azure-devops-share-variable-across-stages-9bca85abfe8a#:~:text=Now%20we%20can%20Pass%20variable,in%20a%20YAML%2Dbased%20pipeline.
+# https://erwinstaal.nl/posts/azure-devops-multistage-pass-variables/
+
+# TODO: Reduce build time with cache like: https://docs.microsoft.com/da-dk/azure/devops/pipelines/release/caching?view=azure-devops
+
+trigger:
+- master
+
+pool:
+  vmImage: 'macos-latest'
+
+variables:
+  version: 0.1 #(Major.Minor) Should be overridden by GitTag
+  patch: $[counter(variables['version'], 0)]
+  sdk: 'iphoneos'
+  configuration: 'Release'
+  apiKeyId: $(AppStoreConnectApiKeyId)
+  issuerId: $(AppStoreConnectIssuerId)
+  project_path: 'src/HabiCenInspectionApp/HabiCenInspectionApp.xcodeproj'
+
+steps:
+- checkout: self
+
+#Get GitVersion SemVer
+- task: gitversion/setup@0
+  displayName: 'Install GitTools'
+  inputs:
+    versionSpec: '5.3.x'
+
+- task: gitversion/execute@0
+  displayName: 'Calculate SemVer'
+  inputs:
+    useConfigFile: true
+    configFilePath: 'Pipelines/GitVersion.yml'
+
+#Set version from Git tags (Major & Minor)
+- bash: |
+    echo "##vso[task.setvariable variable=version]$(GitVersion.Major).$(GitVersion.Minor)"
+    echo current Major is $(GitVersion.Major).$(GitVersion.Minor) == $(version)
+  displayName: 'Set Major & Minor from Git tags'
+
+#Set patch and update build number
+- bash: |
+    echo "##vso[task.setvariable variable=patch]$(patch)"
+    echo "##vso[build.updatebuildnumber]$(version).$(patch)"
+  displayName: 'Set Patch and update build number'
+
+#Build & Upload
+- task: DeleteFiles@1
+  displayName: 'Remove unneeded files'
+  inputs:
+    contents: |
+        **/$(project_path)/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          #Added to fix XCode: error in 13.2.1, Package.resolved file is corrupted or malformed; fix or delete the file to continue: unsupported schema version 2xcodebuild
+
+- script: 'gem install bundle'
+  displayName: 'Install Bundler'
+
+- script: 'bundle install'
+  displayName: 'Install Gemfile dependencies'
+  workingDirectory: 'src/HabiCenInspectionApp'
+
+# Workaround as the marketing version cannot be updated through fastlane...
+- script: |
+    echo 'before:'
+    grep -i 'MARKETING_VERSION' $(project_path)/project.pbxproj
+    sed -i '' -e 's/MARKETING_VERSION \= [^\;]*\;/MARKETING_VERSION = $(version);/' $(project_path)/project.pbxproj
+    echo 'after:'
+    grep -i 'MARKETING_VERSION' $(project_path)/project.pbxproj
+  displayName: 'Upload marketing version'
+
+- script: bundle exec fastlane versions versionNumber:$(version) buildNumber:$(patch)
+  displayName: 'Update build version'
+  workingDirectory: 'src/HabiCenInspectionApp'
+
+- task: InstallAppleCertificate@2
+  inputs:
+    certSecureFile: 'HabiCenTempInspectionApp_Distribution_Key_2021-01-26.p12'
+    certPwd: '$(HabiCenTempInspectionApp_ReleaseP12Password)'
+
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provProfileSecureFile: 'HabiCenTempInspectionApp_Release.mobileprovision'
+
+- task: Xcode@5
+  inputs:
+    actions: 'build'
+    scheme: 'HabiCenInspectionApp'
+    sdk: '$(SDK)'
+    configuration: '$(Configuration)'
+    signingOption: 'manual'
+    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
+    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+    useXcpretty: true # Makes it easier to diagnose build failures
+    packageApp: true
+
+- task: CopyFiles@2
+  inputs:
+    contents: '**/*.ipa'
+    TargetFolder: '$(build.artifactStagingDirectory)'
+    flattenFolders: true
+
+- task: DownloadSecureFile@1
+  displayName: 'Download App Store Connect API key'
+  name: 'apiKey'
+  inputs:
+    secureFile: 'LM AuthKey_C8KCWGQ422.p8'
+  
+- script: bundle exec fastlane upload apiKeyId:$(apiKeyId) apiKeyIssuerId:'$(issuerId)' apiKeyFilePath:'$(apiKey.secureFilePath)' ipaPath:'$(build.artifactStagingDirectory)/HabiCen Inspection.ipa' versionNumber:'$(version)' buildNumber:$(patch)
+  displayName: 'Upload build to testflight'
+  workingDirectory: 'src/HabiCenInspectionApp'

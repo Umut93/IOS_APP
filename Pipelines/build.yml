@@ -1,0 +1,55 @@
+# Xcode
+# Build, test, and archive an Xcode workspace on macOS.
+# Add steps that install certificates, test, sign, and distribute an app, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/xcode
+# Inspiration:
+# https://ychetankumarsarma.medium.com/build-versioning-in-azure-devops-pipelines-94b5a79f80a0
+# https://arunksingh16.medium.com/azure-devops-share-variable-across-stages-9bca85abfe8a#:~:text=Now%20we%20can%20Pass%20variable,in%20a%20YAML%2Dbased%20pipeline.
+# https://erwinstaal.nl/posts/azure-devops-multistage-pass-variables/
+
+trigger:
+ - none
+
+pool:
+  vmImage: 'macos-latest'
+
+variables:
+  sdk: 'iphoneos'
+  configuration: 'Release'
+  project_path: 'src/HabiCenInspectionApp/HabiCenInspectionApp.xcodeproj'
+
+steps:
+- checkout: self
+
+#Build & Test
+- task: DeleteFiles@1
+  displayName: 'Remove unneeded files'
+  inputs:
+    contents: |
+        **/$(project_path)/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          #Added to fix XCode: error in 13.2.1, Package.resolved file is corrupted or malformed; fix or delete the file to continue: unsupported schema version 2xcodebuild
+
+- task: InstallAppleCertificate@2
+  inputs:
+    certSecureFile: 'HabiCenTempInspectionApp_Distribution_Key_2021-01-26.p12'
+    certPwd: '$(HabiCenTempInspectionApp_ReleaseP12Password)'
+
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provProfileSecureFile: 'HabiCenTempInspectionApp_Release.mobileprovision'
+
+- task: Xcode@5
+  inputs:
+    actions: 'build test'
+    scheme: 'HabiCenInspectionApp'
+    sdk: '$(SDK)'
+    configuration: '$(Configuration)'
+    signingOption: 'manual'
+    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
+    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+    useXcpretty: true # Makes it easier to diagnose build failures
+    packageApp: false
+    destinationPlatformOption: 'iOS'
+    destinationTypeOption: 'simulators'
+    destinationSimulators: 'iPad (9th generation)'
+    publishJUnitResults: true
