@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>msauth.unik.habiceninspection.swift</string>
+			</array>
+		</dict>
+	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>msauthv3</string>
+		<string>msauthv2</string>
+	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>ProximaNova-Regular.ttf</string>
+		<string>ProximaNova-Bold.ttf</string>
+		<string>ProximaNova-Semibold.ttf</string>
+		<string>Satoshi-Regular.otf</string>
+		<string>Satoshi-Medium.otf</string>
+		<string>Satoshi-Bold.otf</string>
+		<string>Font-Awesome-6-Pro-Light-300.otf</string>
+	</array>
+</dict>
+</plist>

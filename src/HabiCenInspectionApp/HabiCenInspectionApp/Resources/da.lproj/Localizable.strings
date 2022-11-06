@@ -1,0 +1,53 @@
+// Inspection Type
+"inspectionType.description.moveIn" = "Indflytningssyn";
+"inspectionType.description.moveOut" = "Fraflytningssyn";
+
+// Inspection Status
+"inspectionStatus.description.notPlanned" = "Ikke planlagt";
+"inspectionStatus.description.planned" = "Planlagt";
+"inspectionStatus.description.finalized" = "Afsluttet";
+
+// Deficiency List Status
+"deficiencyListStatus.description.awaitingResponsible" = "Afventer ansvarlig";
+"deficiencyListStatus.description.awaitingTenant" = "Afventer lejer";
+
+// Area Selector
+"areaSelector.header.inspections" = "Syn";
+"areaSelector.header.deficiencies" = "Fejl & mangler";
+
+// Cards - General
+"card.address.missing" = "Mangler adresse";
+"card.tenant.missing" = "Mangler lejer";
+"card.responsible.missing" = "Mangler ansvarlig";
+
+// Deficiency Cards
+"deficiencyCard.title.awaitingTenant" = "Afventer lejer";
+"deficiencyCard.title.awaitingResponsible" = "Afventer ansvarlig";
+
+// Inspection Cards
+"inspectionCard.title.planned" = "Mangler dato";
+"inspectionCard.title.notPlanned" = "Ikke planlagt";
+"inspectionCard.title.moveIn" = "Indflytningssyn";
+"inspectionCard.title.moveOut" = "Fraflytningssyn";
+
+// Inspection Overview
+"inspectionOverview.list.header.subtitle" = "(i dag)";
+"inspectionOverview.list.searchField.inspection.placeholder" = "Søg i syn";
+"inspectionOverview.list.searchField.deficiency.placeholder" = "Søg i fejl og mangler";
+"inspectionOverview.picker.status" = "Status";
+"inspectionOverview.picker.type" = "Type";
+"inspectionOverview.logout" = "Log ud";
+"inspectionOverview.emptyinspectionlist" = "Ingen syn";
+"inspectionOverview.emptydeficiencylist" = "Ingen fejl- og mangellister";
+"apiErrors.unexpected" = "API kaldet mislykkedes";
+
+
+// Responsible Selector
+"responsibleSelector.header" = "Ansvarlige";
+"responsibleSelector.button" = "Nulstil";
+"responsibleSelector.searchField" = "Søg";
+"responsibleSelector.others" = "Andre";
+
+// Login
+"login.username" = "Brugernavn";
+"login.button" = "Log ind";

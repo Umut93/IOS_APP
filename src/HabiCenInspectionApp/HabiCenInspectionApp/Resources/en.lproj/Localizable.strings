@@ -1,0 +1,53 @@
+// Inspection Type
+"inspectionType.description.moveIn" = "Move in inspection";
+"inspectionType.description.moveOut" = "Move out inspection";
+
+// Inspection Status
+"inspectionStatus.description.notPlanned" = "Not planned";
+"inspectionStatus.description.planned" = "Planned";
+"inspectionStatus.description.finalized" = "Finalized";
+
+// Deficiency List Status
+"deficiencyListStatus.description.awaitingTenant" = "Awaiting tenant";
+"deficiencyListStatus.description.awaitingResponsible" = "Awaiting responsible";
+
+// Area Selector
+"areaSelector.header.inspections" = "Inspections";
+"areaSelector.header.deficiencies" = "Deficiencies";
+
+// Cards - General
+"card.address.missing" = "Missing address";
+"card.tenant.missing" = "Missing tenant";
+"card.responsible.missing" = "Missing responsible";
+
+// Deficiency Cards
+"deficiencyCard.title.awaitingTenant" = "Awaiting Tenant";
+"deficiencyCard.title.awaitingResponsible" = "Awaiting Responsible";
+
+// Inspection Cards
+"inspectionCard.title.planned" = "Missing date";
+"inspectionCard.title.notPlanned" = "Not planned";
+"inspectionCard.title.moveIn" = "Move in inspection";
+"inspectionCard.title.moveOut" = "Move out inspection";
+
+// Inspection Overview
+"inspectionOverview.list.header.subtitle" = "(today)";
+"inspectionOverview.list.searchField.inspection.placeholder" = "Search in inspections";
+"inspectionOverview.list.searchField.deficiency.placeholder" = "Search in deficiencies";
+"inspectionOverview.picker.status" = "Status";
+"inspectionOverview.picker.type" = "Type";
+"inspectionOverview.logout" = "Logout";
+"inspectionOverview.emptyinspectionlist" = "No inspections";
+"inspectionOverview.emptydeficiencylist" = "No deficiency lists";
+"apiErrors.unexpected" = "Unable to call the API for fetching the data";
+
+
+// Responsible Selector
+"responsibleSelector.header" = "Responsibles";
+"responsibleSelector.button" = "Reset";
+"responsibleSelector.searchField" = "Search";
+"responsibleSelector.others" = "Others";
+
+// Login
+"login.username" = "Username";
+"login.button" = "Login";

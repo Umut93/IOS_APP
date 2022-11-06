@@ -1,0 +1,7 @@
+# APPA SwiftLint rules
+line_length: 200
+disabled_rules:
+  - inclusive_language
+  - identifier_name
+  - file_length
+  - type_body_length
